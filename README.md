@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa Digital - Urutan Kelas</title>
+    <title>Absensi Digital - SMP Hamalatul Quran</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -12,49 +12,151 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
-        body{ background: linear-gradient(135deg,#2563eb,#06b6d4,#22c55e); min-height:100vh; padding:15px; }
-        .container{ max-width:1200px; margin:auto; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); border-radius:28px; padding:20px; box-shadow:0 10px 35px rgba(0,0,0,0.15); }
-        .header{ text-align:center; margin-bottom:25px; }
-        .logo{ width:70px; height:70px; margin:auto; border-radius:20px; background:linear-gradient(135deg,#2563eb,#22c55e); display:flex; align-items:center; justify-content:center; color:white; font-size:28px; font-weight:bold; margin-bottom:15px; box-shadow:0 5px 20px rgba(37,99,235,0.3); }
-        .header h1{ color:#1e3a8a; font-size:24px; font-weight:700; }
-        .form-box{ background:#f8fafc; padding:20px; border-radius:22px; margin-bottom:25px; border: 1px solid #e2e8f0; }
-        .form-grid { display: grid; grid-template-columns: 1.5fr 0.8fr 1.5fr 0.8fr 1.2fr auto; gap: 12px; align-items: end; }
-        .input-group{ display:flex; flex-direction:column; gap:7px; }
-        .input-group label{ font-size:13px; font-weight:600; color:#334155; }
-        .form-grid input, .form-grid select{ width:100%; padding:12px; border-radius:12px; border:1.5px solid #dbeafe; outline:none; font-size:14px; background:white; }
-        .tanggal-box{ display:flex; gap:5px; }
-        .tanggal-box select { padding: 12px 5px !important; cursor: pointer; }
-        .rekap{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:25px; }
-        .card{ padding:12px 15px; border-radius:18px; color:white; }
-        .card h4 { font-size: 12px; font-weight: 500; opacity: 0.9; }
-        .card h2 { font-size: 24px; font-weight: 700; }
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background: linear-gradient(135deg,#2563eb,#06b6d4,#22c55e);
+            min-height:100vh;
+            padding:20px;
+        }
+
+        .container{
+            max-width:1200px;
+            margin:auto;
+            background:rgba(255,255,255,0.98);
+            border-radius:28px;
+            padding:30px;
+            box-shadow:0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .header{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        .logo{
+            width:80px;
+            height:80px;
+            margin:auto;
+            border-radius:22px;
+            background:linear-gradient(135deg,#2563eb,#22c55e);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            color:white;
+            font-size:32px;
+            font-weight:bold;
+            margin-bottom:15px;
+            box-shadow:0 8px 20px rgba(37,99,235,0.3);
+        }
+
+        .header h1{
+            color:#1e3a8a;
+            font-size:28px;
+            font-weight:700;
+        }
+
+        /* FORM BOX */
+        .form-box{
+            background:#f8fafc;
+            padding:25px;
+            border-radius:22px;
+            margin-bottom:25px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 1.5fr 0.8fr 1.2fr auto; 
+            gap: 15px;
+            align-items: end;
+        }
+
+        .input-group{
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+
+        .input-group label{
+            font-size:13px;
+            font-weight:600;
+            color:#334155;
+        }
+
+        input, select{
+            width:100%;
+            padding:12px;
+            border-radius:12px;
+            border:1.5px solid #dbeafe;
+            outline:none;
+            font-size:14px;
+            background:white;
+        }
+
+        .tanggal-box{
+            display:flex;
+            gap:5px;
+        }
+        
+        /* REKAP KARTU */
+        .rekap{
+            display:grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap:15px;
+            margin-bottom:25px;
+        }
+
+        .card{
+            padding:20px;
+            border-radius:20px;
+            color:white;
+            text-align: center;
+        }
+
+        .card h4 { font-size: 14px; font-weight: 500; opacity: 0.9; }
+        .card h2 { font-size: 28px; font-weight: 700; }
+
         .hadir{ background:linear-gradient(135deg,#22c55e,#16a34a); }
         .izin{ background:linear-gradient(135deg,#facc15,#eab308); }
         .sakit{ background:linear-gradient(135deg,#38bdf8,#2563eb); }
         .alfa{ background:linear-gradient(135deg,#fb7185,#dc2626); }
-        .btn{ border:none; border-radius:12px; padding:12px 20px; cursor:pointer; font-weight:600; font-size:14px; transition: 0.3s; }
+
+        /* FILTER TANGGAL */
+        .filter-box {
+            background: #eff6ff;
+            padding: 15px 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* TABEL */
+        .table-box{ background:#fff; border-radius:20px; overflow:hidden; border: 1px solid #e2e8f0; }
+        table{ width:100%; border-collapse:collapse; }
+        th{ background:#2563eb; color:white; padding:15px; text-align:left; font-size: 14px; }
+        td{ padding:14px; border-bottom:1px solid #f1f5f9; font-size:14px; }
+        
+        .status-pill{ padding:5px 12px; border-radius:20px; font-size:11px; color:white; font-weight:600; text-transform: uppercase; }
+
+        /* BUTTONS */
+        .btn{ border:none; border-radius:12px; padding:12px 25px; cursor:pointer; font-weight:600; font-size:14px; transition: 0.3s; }
         .btn-primary{ background:#2563eb; color:white; }
         .btn-success{ background:#16a34a; color:white; }
-        .btn-danger{ background:#ef4444; color:white; padding:6px 10px; border-radius:8px; font-size:12px; border:none; }
-        .table-box{ background:#f8fafc; border-radius:20px; overflow:hidden; padding:10px; border: 1px solid #e2e8f0; }
-        .table-container{ overflow-x:auto; }
-        table{ width:100%; border-collapse:collapse; min-width:900px; }
-        th{ background:#2563eb; color:white; padding:14px; text-align:left; font-size: 14px; }
-        td{ padding:12px; border-bottom:1px solid #e2e8f0; font-size:13px; }
-        .status{ padding:4px 10px; border-radius:20px; font-size:10px; color:white; font-weight:600; text-transform: uppercase; }
-        .status-hadir{ background:#16a34a; }
-        .status-izin{ background:#eab308; }
-        .status-sakit{ background:#2563eb; }
-        .status-alfa{ background:#dc2626; }
-        .footer{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; }
-        
-        /* Filter Style */
-        .filter-section { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; background: #eff6ff; padding: 10px 15px; border-radius: 12px; }
-        .filter-section select { padding: 5px 10px; border-radius: 8px; border: 1px solid #bfdbfe; }
+        .btn-danger{ background:#ef4444; color:white; }
 
-        @media(max-width:1100px){ .form-grid { grid-template-columns: 1fr 1fr; } }
-        @media(max-width:600px){ .form-grid { grid-template-columns: 1fr; } .rekap { grid-template-columns: repeat(2, 1fr); } .footer { flex-direction: column; gap: 15px; } }
+        .footer{ margin-top:25px; display:flex; justify-content:space-between; align-items:center; }
+
+        @media(max-width:1024px){
+            .form-grid { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -76,13 +178,13 @@
                 <label>Kelas</label>
                 <select id="kelas">
                     <option value="">Pilih Kelas</option>
-                    <option value="Kelas 7">Kelas 7</option>
-                    <option value="Kelas 8">Kelas 8</option>
-                    <option value="Kelas 9">Kelas 9</option>
+                    <option>Kelas 7</option>
+                    <option>Kelas 8</option>
+                    <option>Kelas 9</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Tanggal Absensi</label>
+                <label>Tanggal (Tgl/Bln/Thn)</label>
                 <div class="tanggal-box">
                     <select id="tgl"></select>
                     <select id="bln"></select>
@@ -113,39 +215,39 @@
         <div class="card alfa"><h4>Alfa</h4><h2 id="countAlfa">0</h2></div>
     </div>
 
-    <div class="filter-section">
-        <strong>Tampilkan Laporan Tanggal:</strong>
-        <select id="filterTgl" onchange="tampilkanData()"></select>
-        <select id="filterBln" onchange="tampilkanData()"></select>
-        <select id="filterThn" onchange="tampilkanData()"></select>
-        <small style="color: #64748b;">(Data otomatis urut Kelas 7 -> 9)</small>
+    <div class="filter-box">
+        <strong>Tampilkan Tanggal:</strong>
+        <div class="tanggal-box">
+            <select id="filterTgl" onchange="tampilkanData()"></select>
+            <select id="filterBln" onchange="tampilkanData()"></select>
+            <select id="filterThn" onchange="tampilkanData()"></select>
+        </div>
+        <small style="color:#64748b">(Otomatis urut Kelas 7, 8, 9)</small>
     </div>
 
     <div class="table-box">
-        <div class="table-container">
-            <table id="tableAbsensi">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama Siswa</th>
-                        <th>Kelas</th>
-                        <th>Hari</th>
-                        <th>Tanggal</th>
-                        <th>Status</th>
-                        <th>Keterangan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody id="tbody"></tbody>
-            </table>
-        </div>
+        <table id="tableAbsensi">
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Siswa</th>
+                    <th>Kelas</th>
+                    <th>Hari</th>
+                    <th>Tanggal</th>
+                    <th>Status</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+        </table>
     </div>
 
     <div class="footer">
-        <h3>Total Baris: <span id="total">0</span></h3>
+        <h3>Total: <span id="total">0</span> data</h3>
         <div>
-            <button class="btn btn-danger" onclick="hapusSemua()" style="margin-right: 10px; background: #64748b;">Reset Memori</button>
-            <button class="btn btn-success" onclick="downloadPDF()">Download PDF Laporan Hari Ini</button>
+            <button class="btn btn-danger" onclick="hapusSemua()" style="margin-right: 10px; background:#64748b;">Reset Memori</button>
+            <button class="btn btn-success" onclick="downloadPDF()">Download PDF Hari Ini</button>
         </div>
     </div>
 </div>
@@ -163,19 +265,16 @@ function initDropdowns() {
     const elements = {};
     ids.forEach(id => elements[id] = document.getElementById(id));
 
-    // Tanggal 1-31
     for (let i = 1; i <= 31; i++) {
         let val = i < 10 ? "0" + i : i;
         elements.tgl.options.add(new Option(val, val));
         elements.filterTgl.options.add(new Option(val, val));
     }
-    // Bulan 1-12
     for (let i = 1; i <= 12; i++) {
         let val = i < 10 ? "0" + i : i;
         elements.bln.options.add(new Option(val, val));
         elements.filterBln.options.add(new Option(val, val));
     }
-    // Tahun
     for (let i = 2025; i <= 2030; i++) {
         elements.thn.options.add(new Option(i, i));
         elements.filterThn.options.add(new Option(i, i));
@@ -200,7 +299,7 @@ function tambahData(){
     const status = document.getElementById("status").value;
     const keterangan = document.getElementById("keterangan").value || "-";
 
-    if(!nama || !kelas){ alert("Nama dan Kelas harus diisi!"); return; }
+    if(!nama || !kelas){ alert("Nama dan Kelas wajib diisi!"); return; }
 
     const dateObj = new Date(`${thn}-${bln}-${tgl}`);
     const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
@@ -214,19 +313,14 @@ function tambahData(){
 }
 
 function tampilkanData() {
-    const fTgl = document.getElementById("filterTgl").value;
-    const fBln = document.getElementById("filterBln").value;
-    const fThn = document.getElementById("filterThn").value;
-    const tglFilter = `${fTgl}-${fBln}-${fThn}`;
-
+    const tglFilter = `${document.getElementById("filterTgl").value}-${document.getElementById("filterBln").value}-${document.getElementById("filterThn").value}`;
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
     let rekap = { Hadir: 0, Izin: 0, Sakit: 0, Alfa: 0 };
 
-    // 1. Filter data berdasarkan tanggal yang dipilih di dropdown filter
     let dataFilter = dataAbsensi.filter(item => item.tanggal === tglFilter);
-
-    // 2. URUTKAN: Kelas 7, lalu 8, lalu 9
+    
+    // URUTKAN BERDASARKAN KELAS
     dataFilter.sort((a, b) => a.kelas.localeCompare(b.kelas));
 
     dataFilter.forEach((item, index) => {
@@ -238,9 +332,9 @@ function tampilkanData() {
             <td>${item.kelas}</td>
             <td>${item.hari}</td>
             <td>${item.tanggal}</td>
-            <td><span class="status status-${item.status.toLowerCase()}">${item.status}</span></td>
+            <td><span class="status-pill" style="background:${getStatusColor(item.status)}">${item.status}</span></td>
             <td>${item.keterangan}</td>
-            <td><button class="btn-danger" onclick="hapusBaris(${item.id})">Hapus</button></td>
+            <td><button class="btn-danger" style="padding:4px 10px; font-size:12px;" onclick="hapusBaris(${item.id})">Hapus</button></td>
         `;
     });
 
@@ -249,6 +343,13 @@ function tampilkanData() {
     document.getElementById("countSakit").innerText = rekap.Sakit;
     document.getElementById("countAlfa").innerText = rekap.Alfa;
     document.getElementById("total").innerText = dataFilter.length;
+}
+
+function getStatusColor(s){
+    if(s==='Hadir') return '#16a34a';
+    if(s==='Izin') return '#eab308';
+    if(s==='Sakit') return '#2563eb';
+    return '#dc2626';
 }
 
 function hapusBaris(id){
@@ -260,7 +361,7 @@ function hapusBaris(id){
 }
 
 function hapusSemua() {
-    if(confirm("Hapus seluruh data di memori?")) {
+    if(confirm("Hapus SEMUA data di memori?")) {
         dataAbsensi = [];
         simpanKeLocalStorage();
         tampilkanData();
@@ -280,7 +381,7 @@ function downloadPDF(){
     doc.text("LAPORAN ABSENSI HARIAN SISWA", 105, 15, { align: "center" });
     doc.setFontSize(12);
     doc.text("SMP HAMALATUL QURAN RINGINAGUNG", 105, 22, { align: "center" });
-    doc.text(`Tanggal Laporan: ${tglLap}`, 14, 32);
+    doc.text(`Tanggal: ${tglLap}`, 14, 32);
     
     doc.autoTable({
         html:'#tableAbsensi',

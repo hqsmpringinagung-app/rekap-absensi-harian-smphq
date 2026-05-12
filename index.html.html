@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Absensi Siswa Digital</title>
+    <title>Absensi Siswa Digital - Urutan Kelas</title>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
@@ -12,160 +12,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
-            font-family:'Poppins',sans-serif;
-        }
-
-        body{
-            background: linear-gradient(135deg,#2563eb,#06b6d4,#22c55e);
-            min-height:100vh;
-            padding:15px;
-        }
-
-        .container{
-            max-width:1200px;
-            margin:auto;
-            background:rgba(255,255,255,0.95);
-            backdrop-filter:blur(10px);
-            border-radius:28px;
-            padding:20px;
-            box-shadow:0 10px 35px rgba(0,0,0,0.15);
-        }
-
-        .header{
-            text-align:center;
-            margin-bottom:25px;
-        }
-
-        .logo{
-            width:70px;
-            height:70px;
-            margin:auto;
-            border-radius:20px;
-            background:linear-gradient(135deg,#2563eb,#22c55e);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            color:white;
-            font-size:28px;
-            font-weight:bold;
-            margin-bottom:15px;
-            box-shadow:0 5px 20px rgba(37,99,235,0.3);
-        }
-
-        .header h1{
-            color:#1e3a8a;
-            font-size:28px;
-            font-weight:700;
-        }
-
-        .header p{
-            color:#64748b;
-            font-size:14px;
-            margin-top:5px;
-        }
-
-        .form-box{
-            background:#f8fafc;
-            padding:20px;
-            border-radius:22px;
-            margin-bottom:25px;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 0.8fr 1.5fr 0.8fr 1.2fr auto; 
-            gap: 12px;
-            align-items: end;
-        }
-
-        .input-group{
-            display:flex;
-            flex-direction:column;
-            gap:7px;
-        }
-
-        .input-group label{
-            font-size:13px;
-            font-weight:600;
-            color:#334155;
-        }
-
-        .form-grid input,
-        .form-grid select{
-            width:100%;
-            padding:12px;
-            border-radius:12px;
-            border:1.5px solid #dbeafe;
-            outline:none;
-            font-size:14px;
-            background:white;
-        }
-
-        .tanggal-box{
-            display:flex;
-            gap:5px;
-        }
-        
-        .tanggal-box select {
-            padding: 12px 5px !important;
-            cursor: pointer;
-        }
-
-        .rekap{
-            display:grid;
-            grid-template-columns:repeat(4, 1fr);
-            gap:12px;
-            margin-bottom:25px;
-        }
-
-        .card{
-            padding:12px 15px;
-            border-radius:18px;
-            color:white;
-            position:relative;
-            overflow:hidden;
-        }
-
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body{ background: linear-gradient(135deg,#2563eb,#06b6d4,#22c55e); min-height:100vh; padding:15px; }
+        .container{ max-width:1200px; margin:auto; background:rgba(255,255,255,0.95); backdrop-filter:blur(10px); border-radius:28px; padding:20px; box-shadow:0 10px 35px rgba(0,0,0,0.15); }
+        .header{ text-align:center; margin-bottom:25px; }
+        .logo{ width:70px; height:70px; margin:auto; border-radius:20px; background:linear-gradient(135deg,#2563eb,#22c55e); display:flex; align-items:center; justify-content:center; color:white; font-size:28px; font-weight:bold; margin-bottom:15px; box-shadow:0 5px 20px rgba(37,99,235,0.3); }
+        .header h1{ color:#1e3a8a; font-size:24px; font-weight:700; }
+        .form-box{ background:#f8fafc; padding:20px; border-radius:22px; margin-bottom:25px; border: 1px solid #e2e8f0; }
+        .form-grid { display: grid; grid-template-columns: 1.5fr 0.8fr 1.5fr 0.8fr 1.2fr auto; gap: 12px; align-items: end; }
+        .input-group{ display:flex; flex-direction:column; gap:7px; }
+        .input-group label{ font-size:13px; font-weight:600; color:#334155; }
+        .form-grid input, .form-grid select{ width:100%; padding:12px; border-radius:12px; border:1.5px solid #dbeafe; outline:none; font-size:14px; background:white; }
+        .tanggal-box{ display:flex; gap:5px; }
+        .tanggal-box select { padding: 12px 5px !important; cursor: pointer; }
+        .rekap{ display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:25px; }
+        .card{ padding:12px 15px; border-radius:18px; color:white; }
         .card h4 { font-size: 12px; font-weight: 500; opacity: 0.9; }
         .card h2 { font-size: 24px; font-weight: 700; }
-
         .hadir{ background:linear-gradient(135deg,#22c55e,#16a34a); }
         .izin{ background:linear-gradient(135deg,#facc15,#eab308); }
         .sakit{ background:linear-gradient(135deg,#38bdf8,#2563eb); }
         .alfa{ background:linear-gradient(135deg,#fb7185,#dc2626); }
-
         .btn{ border:none; border-radius:12px; padding:12px 20px; cursor:pointer; font-weight:600; font-size:14px; transition: 0.3s; }
         .btn-primary{ background:#2563eb; color:white; }
         .btn-success{ background:#16a34a; color:white; }
         .btn-danger{ background:#ef4444; color:white; padding:6px 10px; border-radius:8px; font-size:12px; border:none; }
-
-        .table-box{ background:#f8fafc; border-radius:20px; overflow:hidden; padding:10px; }
+        .table-box{ background:#f8fafc; border-radius:20px; overflow:hidden; padding:10px; border: 1px solid #e2e8f0; }
         .table-container{ overflow-x:auto; }
         table{ width:100%; border-collapse:collapse; min-width:900px; }
         th{ background:#2563eb; color:white; padding:14px; text-align:left; font-size: 14px; }
         td{ padding:12px; border-bottom:1px solid #e2e8f0; font-size:13px; }
-        
         .status{ padding:4px 10px; border-radius:20px; font-size:10px; color:white; font-weight:600; text-transform: uppercase; }
         .status-hadir{ background:#16a34a; }
         .status-izin{ background:#eab308; }
         .status-sakit{ background:#2563eb; }
         .status-alfa{ background:#dc2626; }
-
         .footer{ margin-top:20px; display:flex; justify-content:space-between; align-items:center; }
+        
+        /* Filter Style */
+        .filter-section { margin-bottom: 15px; display: flex; align-items: center; gap: 10px; background: #eff6ff; padding: 10px 15px; border-radius: 12px; }
+        .filter-section select { padding: 5px 10px; border-radius: 8px; border: 1px solid #bfdbfe; }
 
-        @media(max-width:1100px){
-            .form-grid { grid-template-columns: 1fr 1fr; }
-        }
-
-        @media(max-width:600px){
-            .form-grid { grid-template-columns: 1fr; }
-            .rekap { grid-template-columns: repeat(2, 1fr); }
-            .footer { flex-direction: column; gap: 15px; }
-        }
+        @media(max-width:1100px){ .form-grid { grid-template-columns: 1fr 1fr; } }
+        @media(max-width:600px){ .form-grid { grid-template-columns: 1fr; } .rekap { grid-template-columns: repeat(2, 1fr); } .footer { flex-direction: column; gap: 15px; } }
     </style>
 </head>
 <body>
@@ -174,7 +63,7 @@
     <div class="header">
         <div class="logo">A</div>
         <h1>ABSENSI DIGITAL SISWA <br> SMP HAMALATUL QURAN RINGINAGUNG</h1>
-        <p>Kepung - Kediri</p>
+        <p>Laporan Per Hari - Urutan Kelas 7, 8, 9</p>
     </div>
 
     <div class="form-box">
@@ -187,13 +76,13 @@
                 <label>Kelas</label>
                 <select id="kelas">
                     <option value="">Pilih Kelas</option>
-                    <option>Kelas 7</option>
-                    <option>Kelas 8</option>
-                    <option>Kelas 9</option>
+                    <option value="Kelas 7">Kelas 7</option>
+                    <option value="Kelas 8">Kelas 8</option>
+                    <option value="Kelas 9">Kelas 9</option>
                 </select>
             </div>
             <div class="input-group">
-                <label>Tanggal (Tgl/Bln/Thn)</label>
+                <label>Tanggal Absensi</label>
                 <div class="tanggal-box">
                     <select id="tgl"></select>
                     <select id="bln"></select>
@@ -211,7 +100,7 @@
             </div>
             <div class="input-group">
                 <label>Keterangan</label>
-                <input type="text" id="keterangan" placeholder="Catatan tambahan">
+                <input type="text" id="keterangan" placeholder="-">
             </div>
             <button class="btn btn-primary" onclick="tambahData()">Tambah</button>
         </div>
@@ -224,13 +113,21 @@
         <div class="card alfa"><h4>Alfa</h4><h2 id="countAlfa">0</h2></div>
     </div>
 
+    <div class="filter-section">
+        <strong>Tampilkan Laporan Tanggal:</strong>
+        <select id="filterTgl" onchange="tampilkanData()"></select>
+        <select id="filterBln" onchange="tampilkanData()"></select>
+        <select id="filterThn" onchange="tampilkanData()"></select>
+        <small style="color: #64748b;">(Data otomatis urut Kelas 7 -> 9)</small>
+    </div>
+
     <div class="table-box">
         <div class="table-container">
             <table id="tableAbsensi">
                 <thead>
                     <tr>
                         <th>No</th>
-                        <th>Nama</th>
+                        <th>Nama Siswa</th>
                         <th>Kelas</th>
                         <th>Hari</th>
                         <th>Tanggal</th>
@@ -245,10 +142,10 @@
     </div>
 
     <div class="footer">
-        <h3>Total Data: <span id="total">0</span></h3>
+        <h3>Total Baris: <span id="total">0</span></h3>
         <div>
-            <button class="btn btn-danger" onclick="hapusSemua()" style="margin-right: 10px; background: #64748b;">Reset Semua</button>
-            <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+            <button class="btn btn-danger" onclick="hapusSemua()" style="margin-right: 10px; background: #64748b;">Reset Memori</button>
+            <button class="btn btn-success" onclick="downloadPDF()">Download PDF Laporan Hari Ini</button>
         </div>
     </div>
 </div>
@@ -256,46 +153,42 @@
 <script>
 let dataAbsensi = JSON.parse(localStorage.getItem("absensi_data")) || [];
 
-// Inisialisasi Dropdown Tanggal, Bulan, Tahun saat halaman dimuat
 window.onload = function() {
     initDropdowns();
     tampilkanData();
 };
 
 function initDropdowns() {
-    const tglSelect = document.getElementById("tgl");
-    const blnSelect = document.getElementById("bln");
-    const thnSelect = document.getElementById("thn");
+    const ids = ["tgl", "filterTgl", "bln", "filterBln", "thn", "filterThn"];
+    const elements = {};
+    ids.forEach(id => elements[id] = document.getElementById(id));
 
-    // Isi Tanggal 1-31
+    // Tanggal 1-31
     for (let i = 1; i <= 31; i++) {
-        let opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = i < 10 ? "0" + i : i;
-        tglSelect.appendChild(opt);
+        let val = i < 10 ? "0" + i : i;
+        elements.tgl.options.add(new Option(val, val));
+        elements.filterTgl.options.add(new Option(val, val));
     }
-
-    // Isi Bulan 1-12
+    // Bulan 1-12
     for (let i = 1; i <= 12; i++) {
-        let opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = i < 10 ? "0" + i : i;
-        blnSelect.appendChild(opt);
+        let val = i < 10 ? "0" + i : i;
+        elements.bln.options.add(new Option(val, val));
+        elements.filterBln.options.add(new Option(val, val));
+    }
+    // Tahun
+    for (let i = 2025; i <= 2030; i++) {
+        elements.thn.options.add(new Option(i, i));
+        elements.filterThn.options.add(new Option(i, i));
     }
 
-    // Isi Tahun (2024 - 2030)
-    for (let i = 2024; i <= 2030; i++) {
-        let opt = document.createElement("option");
-        opt.value = i;
-        opt.innerHTML = i;
-        thnSelect.appendChild(opt);
-    }
-
-    // Set otomatis ke tanggal hari ini
     const today = new Date();
-    tglSelect.value = today.getDate();
-    blnSelect.value = today.getMonth() + 1;
-    thnSelect.value = today.getFullYear();
+    const d = String(today.getDate()).padStart(2, '0');
+    const m = String(today.getMonth() + 1).padStart(2, '0');
+    const y = today.getFullYear();
+
+    elements.tgl.value = d; elements.filterTgl.value = d;
+    elements.bln.value = m; elements.filterBln.value = m;
+    elements.thn.value = y; elements.filterThn.value = y;
 }
 
 function tambahData(){
@@ -307,38 +200,36 @@ function tambahData(){
     const status = document.getElementById("status").value;
     const keterangan = document.getElementById("keterangan").value || "-";
 
-    if(!nama || !kelas){
-        alert("Harap isi Nama dan pilih Kelas!");
-        return;
-    }
+    if(!nama || !kelas){ alert("Nama dan Kelas harus diisi!"); return; }
 
     const dateObj = new Date(`${thn}-${bln}-${tgl}`);
     const hariList = ["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];
     const hari = hariList[dateObj.getDay()];
-    const formatTanggal = String(tgl).padStart(2,'0') + "-" + String(bln).padStart(2,'0') + "-" + thn;
+    const formatTanggal = `${tgl}-${bln}-${thn}`;
 
-    const dataBaru = {
-        id: Date.now(),
-        nama,
-        kelas,
-        hari,
-        tanggal: formatTanggal,
-        status,
-        keterangan
-    };
-
-    dataAbsensi.push(dataBaru);
+    dataAbsensi.push({ id: Date.now(), nama, kelas, hari, tanggal: formatTanggal, status, keterangan });
     simpanKeLocalStorage();
     tampilkanData();
-    resetForm();
+    document.getElementById("nama").value = "";
 }
 
 function tampilkanData() {
+    const fTgl = document.getElementById("filterTgl").value;
+    const fBln = document.getElementById("filterBln").value;
+    const fThn = document.getElementById("filterThn").value;
+    const tglFilter = `${fTgl}-${fBln}-${fThn}`;
+
     const tbody = document.getElementById("tbody");
     tbody.innerHTML = "";
     let rekap = { Hadir: 0, Izin: 0, Sakit: 0, Alfa: 0 };
 
-    dataAbsensi.forEach((item, index) => {
+    // 1. Filter data berdasarkan tanggal yang dipilih di dropdown filter
+    let dataFilter = dataAbsensi.filter(item => item.tanggal === tglFilter);
+
+    // 2. URUTKAN: Kelas 7, lalu 8, lalu 9
+    dataFilter.sort((a, b) => a.kelas.localeCompare(b.kelas));
+
+    dataFilter.forEach((item, index) => {
         rekap[item.status]++;
         const row = tbody.insertRow();
         row.innerHTML = `
@@ -357,7 +248,7 @@ function tampilkanData() {
     document.getElementById("countIzin").innerText = rekap.Izin;
     document.getElementById("countSakit").innerText = rekap.Sakit;
     document.getElementById("countAlfa").innerText = rekap.Alfa;
-    document.getElementById("total").innerText = dataAbsensi.length;
+    document.getElementById("total").innerText = dataFilter.length;
 }
 
 function hapusBaris(id){
@@ -369,7 +260,7 @@ function hapusBaris(id){
 }
 
 function hapusSemua() {
-    if(confirm("Hapus semua data absensi?")) {
+    if(confirm("Hapus seluruh data di memori?")) {
         dataAbsensi = [];
         simpanKeLocalStorage();
         tampilkanData();
@@ -380,22 +271,26 @@ function simpanKeLocalStorage() {
     localStorage.setItem("absensi_data", JSON.stringify(dataAbsensi));
 }
 
-function resetForm(){
-    document.getElementById("nama").value = "";
-    document.getElementById("keterangan").value = "";
-    // Tanggal tetap di setting hari ini agar tidak perlu pilih-pilih lagi
-}
-
 function downloadPDF(){
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
-    doc.text("LAPORAN ABSENSI SISWA - SMP HAMALATUL QURAN", 14, 15);
+    const tglLap = `${document.getElementById("filterTgl").value}-${document.getElementById("filterBln").value}-${document.getElementById("filterThn").value}`;
+
+    doc.setFontSize(16);
+    doc.text("LAPORAN ABSENSI HARIAN SISWA", 105, 15, { align: "center" });
+    doc.setFontSize(12);
+    doc.text("SMP HAMALATUL QURAN RINGINAGUNG", 105, 22, { align: "center" });
+    doc.text(`Tanggal Laporan: ${tglLap}`, 14, 32);
+    
     doc.autoTable({
         html:'#tableAbsensi',
-        startY: 25,
+        startY: 38,
+        theme: 'grid',
+        headStyles: { fillColor: [37, 99, 235] },
         didParseCell: (data) => { if(data.column.index === 7) data.cell.text = ''; }
     });
-    doc.save("Absensi_Siswa.pdf");
+
+    doc.save(`Absensi_${tglLap}.pdf`);
 }
 </script>
 

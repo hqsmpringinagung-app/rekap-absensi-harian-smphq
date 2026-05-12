@@ -75,10 +75,9 @@
             margin-bottom:25px;
         }
 
-        /* GRID DISESUAIKAN UNTUK KOLOM KETERANGAN */
         .form-grid {
             display: grid;
-            grid-template-columns: 1.5fr 0.8fr 1.2fr 0.8fr 1.5fr auto; 
+            grid-template-columns: 1.5fr 0.8fr 1.5fr 0.8fr 1.2fr auto; 
             gap: 12px;
             align-items: end;
         }
@@ -111,13 +110,10 @@
             gap:5px;
         }
         
-        .tanggal-box input {
-            padding: 12px 2px !important;
-            text-align: center;
+        .tanggal-box select {
+            padding: 12px 5px !important;
+            cursor: pointer;
         }
-
-        #tgl, #bln { width: 55px; }
-        #thn { width: 75px; }
 
         .rekap{
             display:grid;
@@ -169,7 +165,6 @@
             .form-grid { grid-template-columns: 1fr; }
             .rekap { grid-template-columns: repeat(2, 1fr); }
             .footer { flex-direction: column; gap: 15px; }
-            #tgl, #bln, #thn { width: 100%; }
         }
     </style>
 </head>
@@ -198,11 +193,11 @@
                 </select>
             </div>
             <div class="input-group">
-                <label>Tanggal</label>
+                <label>Tanggal (Tgl/Bln/Thn)</label>
                 <div class="tanggal-box">
-                    <input type="number" id="tgl" placeholder="Tgl">
-                    <input type="number" id="bln" placeholder="Bln">
-                    <input type="number" id="thn" placeholder="Thn">
+                    <select id="tgl"></select>
+                    <select id="bln"></select>
+                    <select id="thn"></select>
                 </div>
             </div>
             <div class="input-group">
@@ -251,12 +246,57 @@
 
     <div class="footer">
         <h3>Total Data: <span id="total">0</span></h3>
-        <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+        <div>
+            <button class="btn btn-danger" onclick="hapusSemua()" style="margin-right: 10px; background: #64748b;">Reset Semua</button>
+            <button class="btn btn-success" onclick="downloadPDF()">Download PDF</button>
+        </div>
     </div>
 </div>
 
 <script>
-let counter = 1;
+let dataAbsensi = JSON.parse(localStorage.getItem("absensi_data")) || [];
+
+// Inisialisasi Dropdown Tanggal, Bulan, Tahun saat halaman dimuat
+window.onload = function() {
+    initDropdowns();
+    tampilkanData();
+};
+
+function initDropdowns() {
+    const tglSelect = document.getElementById("tgl");
+    const blnSelect = document.getElementById("bln");
+    const thnSelect = document.getElementById("thn");
+
+    // Isi Tanggal 1-31
+    for (let i = 1; i <= 31; i++) {
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.innerHTML = i < 10 ? "0" + i : i;
+        tglSelect.appendChild(opt);
+    }
+
+    // Isi Bulan 1-12
+    for (let i = 1; i <= 12; i++) {
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.innerHTML = i < 10 ? "0" + i : i;
+        blnSelect.appendChild(opt);
+    }
+
+    // Isi Tahun (2024 - 2030)
+    for (let i = 2024; i <= 2030; i++) {
+        let opt = document.createElement("option");
+        opt.value = i;
+        opt.innerHTML = i;
+        thnSelect.appendChild(opt);
+    }
+
+    // Set otomatis ke tanggal hari ini
+    const today = new Date();
+    tglSelect.value = today.getDate();
+    blnSelect.value = today.getMonth() + 1;
+    thnSelect.value = today.getFullYear();
+}
 
 function tambahData(){
     const nama = document.getElementById("nama").value;
@@ -267,8 +307,8 @@ function tambahData(){
     const status = document.getElementById("status").value;
     const keterangan = document.getElementById("keterangan").value || "-";
 
-    if(!nama || !kelas || !tgl || !bln || !thn){
-        alert("Harap isi semua kolom wajib!");
+    if(!nama || !kelas){
+        alert("Harap isi Nama dan pilih Kelas!");
         return;
     }
 
@@ -277,63 +317,83 @@ function tambahData(){
     const hari = hariList[dateObj.getDay()];
     const formatTanggal = String(tgl).padStart(2,'0') + "-" + String(bln).padStart(2,'0') + "-" + thn;
 
-    updateRekap(status, 1);
+    const dataBaru = {
+        id: Date.now(),
+        nama,
+        kelas,
+        hari,
+        tanggal: formatTanggal,
+        status,
+        keterangan
+    };
 
-    const tbody = document.getElementById("tbody");
-    const row = tbody.insertRow();
-    row.innerHTML = `
-        <td>${counter++}</td>
-        <td>${nama}</td>
-        <td>${kelas}</td>
-        <td>${hari}</td>
-        <td>${formatTanggal}</td>
-        <td><span class="status status-${status.toLowerCase()}">${status}</span></td>
-        <td>${keterangan}</td>
-        <td><button class="btn-danger" onclick="hapusBaris(this,'${status}')">Hapus</button></td>
-    `;
-
-    document.getElementById("total").innerText = tbody.rows.length;
+    dataAbsensi.push(dataBaru);
+    simpanKeLocalStorage();
+    tampilkanData();
     resetForm();
 }
 
-function updateRekap(status, val){
-    const id = "count" + status;
-    const el = document.getElementById(id);
-    el.innerText = parseInt(el.innerText) + val;
+function tampilkanData() {
+    const tbody = document.getElementById("tbody");
+    tbody.innerHTML = "";
+    let rekap = { Hadir: 0, Izin: 0, Sakit: 0, Alfa: 0 };
+
+    dataAbsensi.forEach((item, index) => {
+        rekap[item.status]++;
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.nama}</td>
+            <td>${item.kelas}</td>
+            <td>${item.hari}</td>
+            <td>${item.tanggal}</td>
+            <td><span class="status status-${item.status.toLowerCase()}">${item.status}</span></td>
+            <td>${item.keterangan}</td>
+            <td><button class="btn-danger" onclick="hapusBaris(${item.id})">Hapus</button></td>
+        `;
+    });
+
+    document.getElementById("countHadir").innerText = rekap.Hadir;
+    document.getElementById("countIzin").innerText = rekap.Izin;
+    document.getElementById("countSakit").innerText = rekap.Sakit;
+    document.getElementById("countAlfa").innerText = rekap.Alfa;
+    document.getElementById("total").innerText = dataAbsensi.length;
 }
 
-function hapusBaris(btn, status){
+function hapusBaris(id){
     if(confirm("Hapus data ini?")){
-        btn.parentElement.parentElement.remove();
-        updateRekap(status, -1);
-        document.getElementById("total").innerText = document.getElementById("tbody").rows.length;
+        dataAbsensi = dataAbsensi.filter(item => item.id !== id);
+        simpanKeLocalStorage();
+        tampilkanData();
     }
+}
+
+function hapusSemua() {
+    if(confirm("Hapus semua data absensi?")) {
+        dataAbsensi = [];
+        simpanKeLocalStorage();
+        tampilkanData();
+    }
+}
+
+function simpanKeLocalStorage() {
+    localStorage.setItem("absensi_data", JSON.stringify(dataAbsensi));
 }
 
 function resetForm(){
     document.getElementById("nama").value = "";
-    document.getElementById("kelas").value = "";
-    document.getElementById("tgl").value = "";
-    document.getElementById("bln").value = "";
-    document.getElementById("thn").value = "";
-    document.getElementById("status").value = "Hadir";
     document.getElementById("keterangan").value = "";
+    // Tanggal tetap di setting hari ini agar tidak perlu pilih-pilih lagi
 }
 
 function downloadPDF(){
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     doc.text("LAPORAN ABSENSI SISWA - SMP HAMALATUL QURAN", 14, 15);
-    doc.setFontSize(10);
-    doc.text("Tanggal Cetak: " + new Date().toLocaleDateString('id-ID'), 14, 22);
-    
     doc.autoTable({
         html:'#tableAbsensi',
-        startY: 30,
-        didParseCell: (data) => { 
-            // Jangan cetak kolom aksi (tombol hapus) di PDF
-            if(data.column.index === 7) data.cell.text = ''; 
-        }
+        startY: 25,
+        didParseCell: (data) => { if(data.column.index === 7) data.cell.text = ''; }
     });
     doc.save("Absensi_Siswa.pdf");
 }
